@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 import { OrderStatusBadge } from "./admin.transactions";
 
 export const Route = createFileRoute("/seller/orders")({
-  component: SellerOrders;
+  component: SellerOrders,
 });
 
 function SellerOrders() {
