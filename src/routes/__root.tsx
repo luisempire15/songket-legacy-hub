@@ -76,15 +76,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   head: () => ({
     meta: [
       { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { name: "viewport", content: "width=device-width, initial-scale=1, maximum-scale=1" },
+      { name: "theme-color", content: "#7B1E1E" },
+      { title: "UMKM Songket Dekranasda Sumatera Selatan" },
+      { name: "description", content: "Marketplace resmi UMKM Songket dan tenun tradisional khas Sumatera Selatan, dibina langsung oleh Dekranasda." },
+      { property: "og:title", content: "UMKM Songket Dekranasda Sumatera Selatan" },
+      { property: "og:description", content: "Jelajahi koleksi Songket Palembang, Jumputan, Tajung, dan Blongsong asli dari pengrajin UMKM Sumsel." },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
       {
