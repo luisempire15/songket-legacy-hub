@@ -7,6 +7,11 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
+import { Toaster } from "sonner";
+import { AppProvider } from "@/context/AppContext";
+import { Header } from "@/components/site/Header";
+import { Footer } from "@/components/site/Footer";
+import { BottomNav } from "@/components/site/BottomNav";
 
 import appCss from "../styles.css?url";
 
@@ -113,8 +118,17 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      <AppProvider>
+        <div className="flex min-h-screen flex-col pb-14 sm:pb-0">
+          <Header />
+          <main className="flex-1">
+            <Outlet />
+          </main>
+          <Footer />
+          <BottomNav />
+          <Toaster richColors position="top-center" />
+        </div>
+      </AppProvider>
     </QueryClientProvider>
   );
 }
