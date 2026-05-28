@@ -7,7 +7,6 @@ import { cn } from "@/lib/utils";
 const NAV = [
   { to: "/", label: "Beranda" },
   { to: "/shop", label: "Koleksi" },
-  { to: "/shop?category=Songket Palembang", label: "Songket" },
   { to: "/about", label: "Tentang" },
 ];
 
