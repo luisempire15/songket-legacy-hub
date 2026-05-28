@@ -10,14 +10,20 @@ export const Route = createFileRoute("/cart")({
 });
 
 function CartPage() {
-  const { cart, updateQty, removeFromCart, cartTotal, clearCart } = useApp();
+  const { cart, updateQty, removeFromCart, cartTotal, checkout, user } = useApp();
   const navigate = useNavigate();
   const shipping = cart.length > 0 ? 25000 : 0;
 
-  const checkout = () => {
-    toast.success("Pesanan berhasil dibuat! (demo)");
-    clearCart();
-    navigate({ to: "/shop" });
+  const handleCheckout = () => {
+    if (!user) {
+      toast.error("Silakan masuk dulu untuk checkout");
+      return navigate({ to: "/login" });
+    }
+    const order = checkout("Jl. Merdeka 12, Palembang", "Transfer Bank");
+    if (order) {
+      toast.success(`Pesanan ${order.id} berhasil dibuat!`);
+      navigate({ to: "/shop" });
+    }
   };
 
   if (cart.length === 0) {
@@ -84,7 +90,7 @@ function CartPage() {
             </div>
           </dl>
           <button
-            onClick={checkout}
+            onClick={handleCheckout}
             className="mt-6 flex h-12 w-full items-center justify-center gap-2 rounded-full bg-primary font-medium text-primary-foreground shadow-elegant hover:bg-primary-glow"
           >
             Lanjut ke Checkout <ArrowRight className="h-4 w-4" />

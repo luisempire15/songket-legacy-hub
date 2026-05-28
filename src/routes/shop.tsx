@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Search } from "lucide-react";
-import { products, categories, type Category } from "@/lib/mockData";
+import { categories, type Category } from "@/lib/mockData";
+import { useApp } from "@/context/AppContext";
 import { ProductCard } from "@/components/site/ProductCard";
 import { cn } from "@/lib/utils";
 
@@ -23,6 +24,7 @@ export const Route = createFileRoute("/shop")({
 
 function Shop() {
   const { category: initialCat, q: initialQ } = Route.useSearch();
+  const { products } = useApp();
   const [cat, setCat] = useState<Category | "">(((initialCat as Category) || ""));
   const [q, setQ] = useState(initialQ);
   const [sort, setSort] = useState<SortKey>("popular");

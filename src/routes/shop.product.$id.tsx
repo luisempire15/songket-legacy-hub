@@ -1,6 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useState } from "react";
-import { Star, Store, Minus, Plus, ShoppingBag, Truck, ShieldCheck, ArrowLeft } from "lucide-react";
+import { Star, Store, Minus, Plus, ShoppingBag, Truck, ShieldCheck, ArrowLeft, Award } from "lucide-react";
 import { toast } from "sonner";
 import { products, formatIDR } from "@/lib/mockData";
 import { useApp } from "@/context/AppContext";
@@ -31,10 +31,12 @@ export const Route = createFileRoute("/shop/product/$id")({
 });
 
 function ProductDetail() {
-  const { product } = Route.useLoaderData();
-  const { addToCart } = useApp();
+  const { product: loaderProduct } = Route.useLoaderData();
+  const { addToCart, products: ctxProducts } = useApp();
+  // Prefer up-to-date product from context (certified flag may change)
+  const product = ctxProducts.find((p) => p.id === loaderProduct.id) ?? loaderProduct;
   const [qty, setQty] = useState(1);
-  const related = products.filter((p) => p.category === product.category && p.id !== product.id).slice(0, 4);
+  const related = ctxProducts.filter((p) => p.category === product.category && p.id !== product.id).slice(0, 4);
 
   const handleAdd = () => {
     addToCart(product, qty);
@@ -62,6 +64,12 @@ function ProductDetail() {
           <span className="self-start rounded-full bg-gold/15 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-primary">
             {product.category}
           </span>
+          {product.certified && (
+            <div className="mt-3 inline-flex items-center gap-2 self-start rounded-full bg-gradient-to-r from-gold to-[oklch(0.65_0.15_70)] px-4 py-1.5 text-xs font-bold text-gold-foreground shadow-gold">
+              <Award className="h-4 w-4" />
+              Sertifikat Resmi Dekranasda Sumsel
+            </div>
+          )}
           <h1 className="mt-4 font-display text-3xl font-bold leading-tight sm:text-4xl">{product.name}</h1>
           <div className="mt-3 flex items-center gap-4 text-sm">
             <span className="flex items-center gap-1 font-medium">
