@@ -58,10 +58,13 @@ function SellerProducts() {
     const price = Number(form.price), stock = Number(form.stock), weight = Number(form.weight);
     if (!form.name || !form.description || !form.material) return toast.error("Lengkapi semua field");
     if (price <= 0 || stock < 0 || weight <= 0) return toast.error("Angka harus valid");
-    if (!form.image_url) return toast.error("Upload foto produk");
+    
+    // Fallback to a high-quality default product image if none uploaded
+    const imageUrl = form.image_url || "https://images.unsplash.com/photo-1544816155-12df9643f363?w=600";
+    
     const payload = {
       name: form.name, description: form.description, price, stock, weight,
-      category: form.category, material: form.material, image_url: form.image_url,
+      category: form.category, material: form.material, image_url: imageUrl,
       seller_id: user!.id, umkm_name: user!.umkm_name ?? user!.full_name,
     };
     if (editing) {

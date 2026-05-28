@@ -19,11 +19,7 @@ function CartPage() {
       toast.error("Silakan masuk dulu untuk checkout");
       return navigate({ to: "/login" });
     }
-    const order = checkout("Jl. Merdeka 12, Palembang", "Transfer Bank");
-    if (order) {
-      toast.success(`Pesanan ${order.id} berhasil dibuat!`);
-      navigate({ to: "/shop" });
-    }
+    navigate({ to: "/shop/checkout" });
   };
 
   if (cart.length === 0) {

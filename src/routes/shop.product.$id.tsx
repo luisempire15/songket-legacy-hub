@@ -5,10 +5,20 @@ import { toast } from "sonner";
 import { products, formatIDR } from "@/lib/mockData";
 import { useApp } from "@/context/AppContext";
 import { ProductCard } from "@/components/site/ProductCard";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export const Route = createFileRoute("/shop/product/$id")({
   loader: ({ params }) => {
-    const p = products.find((x) => x.id === params.id);
+    let localProducts = [];
+    if (typeof window !== "undefined") {
+      try {
+        const raw = localStorage.getItem("dekranasda_products");
+        if (raw) localProducts = JSON.parse(raw);
+      } catch (e) {
+        console.error("Failed to load products from localStorage in loader", e);
+      }
+    }
+    const p = localProducts.find((x: any) => x.id === params.id) || products.find((x) => x.id === params.id);
     if (!p) throw notFound();
     return { product: p };
   },
@@ -31,10 +41,11 @@ export const Route = createFileRoute("/shop/product/$id")({
 });
 
 function ProductDetail() {
+  const { id } = Route.useParams();
   const { product: loaderProduct } = Route.useLoaderData();
   const { addToCart, products: ctxProducts } = useApp();
   // Prefer up-to-date product from context (certified flag may change)
-  const product = ctxProducts.find((p) => p.id === loaderProduct.id) ?? loaderProduct;
+  const product = ctxProducts.find((p) => p.id === id) ?? loaderProduct;
   const [qty, setQty] = useState(1);
   const related = ctxProducts.filter((p) => p.category === product.category && p.id !== product.id).slice(0, 4);
 
@@ -95,18 +106,27 @@ function ProductDetail() {
             </div>
           </div>
 
-          <p className="mt-6 text-sm leading-relaxed text-foreground/80">{product.description}</p>
-
-          <dl className="mt-6 grid grid-cols-2 gap-x-6 gap-y-3 rounded-xl border border-border bg-card p-5 text-sm">
-            <div>
-              <dt className="text-xs uppercase tracking-wider text-muted-foreground">Bahan</dt>
-              <dd className="mt-1 font-medium">{product.material}</dd>
-            </div>
-            <div>
-              <dt className="text-xs uppercase tracking-wider text-muted-foreground">Berat</dt>
-              <dd className="mt-1 font-medium">{product.weight} g</dd>
-            </div>
-          </dl>
+          <Tabs defaultValue="description" className="mt-6 w-full">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="description">Deskripsi</TabsTrigger>
+              <TabsTrigger value="specification">Spesifikasi</TabsTrigger>
+            </TabsList>
+            <TabsContent value="description" className="mt-4 text-sm leading-relaxed text-foreground/80 bg-card border border-border rounded-xl p-5">
+              {product.description}
+            </TabsContent>
+            <TabsContent value="specification" className="mt-4 bg-card border border-border rounded-xl p-5">
+              <dl className="grid grid-cols-2 gap-x-6 gap-y-3 text-sm">
+                <div>
+                  <dt className="text-xs uppercase tracking-wider text-muted-foreground">Bahan</dt>
+                  <dd className="mt-1 font-medium text-foreground">{product.material}</dd>
+                </div>
+                <div>
+                  <dt className="text-xs uppercase tracking-wider text-muted-foreground">Berat</dt>
+                  <dd className="mt-1 font-medium text-foreground">{product.weight} g</dd>
+                </div>
+              </dl>
+            </TabsContent>
+          </Tabs>
 
           <div className="mt-8 flex items-center gap-4">
             <div className="flex items-center rounded-full border border-border">

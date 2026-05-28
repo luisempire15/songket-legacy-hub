@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Outlet, useLocation } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Search } from "lucide-react";
 import { categories, type Category } from "@/lib/mockData";
@@ -23,11 +23,19 @@ export const Route = createFileRoute("/shop")({
 });
 
 function Shop() {
+  const location = useLocation();
   const { category: initialCat, q: initialQ } = Route.useSearch();
   const { products } = useApp();
   const [cat, setCat] = useState<Category | "">(((initialCat as Category) || ""));
   const [q, setQ] = useState(initialQ);
   const [sort, setSort] = useState<SortKey>("popular");
+
+  const isShopIndex = location.pathname === "/shop" || location.pathname === "/shop/";
+
+  if (!isShopIndex) {
+    return <Outlet />;
+  }
+
 
   const list = useMemo(() => {
     let r = products.slice();
