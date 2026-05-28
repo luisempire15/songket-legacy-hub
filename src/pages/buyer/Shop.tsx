@@ -1,41 +1,22 @@
-import { createFileRoute, Outlet, useLocation } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Search } from "lucide-react";
 import { categories, type Category } from "@/lib/mockData";
 import { useApp } from "@/context/AppContext";
 import { ProductCard } from "@/components/site/ProductCard";
 import { cn } from "@/lib/utils";
+import { useSearchParams } from "react-router-dom";
 
 type SortKey = "newest" | "popular" | "price_asc" | "price_desc";
 
-export const Route = createFileRoute("/shop")({
-  head: () => ({
-    meta: [
-      { title: "Koleksi Songket — Dekranasda Sumsel" },
-      { name: "description", content: "Jelajahi koleksi Songket Palembang, Jumputan, Tajung, dan Blongsong dari pengrajin UMKM Sumsel." },
-    ],
-  }),
-  validateSearch: (s: Record<string, unknown>) => ({
-    category: (s.category as string) || "",
-    q: (s.q as string) || "",
-  }),
-  component: Shop,
-});
+export default function Shop() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialCat = searchParams.get("category") || "";
+  const initialQ = searchParams.get("q") || "";
 
-function Shop() {
-  const location = useLocation();
-  const { category: initialCat, q: initialQ } = Route.useSearch();
   const { products } = useApp();
-  const [cat, setCat] = useState<Category | "">(((initialCat as Category) || ""));
+  const [cat, setCat] = useState<Category | "">(initialCat as Category | "");
   const [q, setQ] = useState(initialQ);
   const [sort, setSort] = useState<SortKey>("popular");
-
-  const isShopIndex = location.pathname === "/shop" || location.pathname === "/shop/";
-
-  if (!isShopIndex) {
-    return <Outlet />;
-  }
-
 
   const list = useMemo(() => {
     let r = products.slice();
@@ -49,7 +30,25 @@ function Shop() {
     if (sort === "popular") r.sort((a, b) => b.total_sold - a.total_sold);
     if (sort === "newest") r.reverse();
     return r;
-  }, [cat, q, sort]);
+  }, [products, cat, q, sort]);
+
+  const handleCategoryChange = (c: Category | "") => {
+    setCat(c);
+    setSearchParams((prev) => {
+      if (c) prev.set("category", c);
+      else prev.delete("category");
+      return prev;
+    });
+  };
+
+  const handleQueryChange = (val: string) => {
+    setQ(val);
+    setSearchParams((prev) => {
+      if (val.trim()) prev.set("q", val);
+      else prev.delete("q");
+      return prev;
+    });
+  };
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 lg:px-8 lg:py-14">
@@ -65,7 +64,7 @@ function Shop() {
           <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <input
             value={q}
-            onChange={(e) => setQ(e.target.value)}
+            onChange={(e) => handleQueryChange(e.target.value)}
             placeholder="Cari produk atau UMKM..."
             className="h-12 w-full rounded-full border border-border bg-card pl-11 pr-4 text-sm outline-none transition-colors focus:border-gold focus:ring-2 focus:ring-gold/30"
           />
@@ -84,9 +83,9 @@ function Shop() {
 
       {/* category pills */}
       <div className="mb-10 flex flex-wrap gap-2">
-        <Pill active={cat === ""} onClick={() => setCat("")}>Semua</Pill>
+        <Pill active={cat === ""} onClick={() => handleCategoryChange("")}>Semua</Pill>
         {categories.map((c) => (
-          <Pill key={c} active={cat === c} onClick={() => setCat(c)}>{c}</Pill>
+          <Pill key={c} active={cat === c} onClick={() => handleCategoryChange(c)}>{c}</Pill>
         ))}
       </div>
 
@@ -111,7 +110,7 @@ function Pill({ active, onClick, children }: { active: boolean; onClick: () => v
     <button
       onClick={onClick}
       className={cn(
-        "rounded-full px-4 py-2 text-sm font-medium transition-all",
+        "rounded-full px-4 py-2 text-sm font-medium transition-all cursor-pointer",
         active
           ? "bg-primary text-primary-foreground shadow-elegant"
           : "border border-border bg-card text-foreground/70 hover:border-gold hover:text-primary",

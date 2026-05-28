@@ -1,25 +1,20 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "react-router-dom";
 import { Minus, Plus, Trash2, ShoppingBag, ArrowRight } from "lucide-react";
 import { useApp } from "@/context/AppContext";
 import { formatIDR } from "@/lib/mockData";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/cart")({
-  head: () => ({ meta: [{ title: "Keranjang — Dekranasda Sumsel" }] }),
-  component: CartPage,
-});
-
-function CartPage() {
-  const { cart, updateQty, removeFromCart, cartTotal, checkout, user } = useApp();
+export default function Cart() {
+  const { cart, updateQty, removeFromCart, cartTotal, user } = useApp();
   const navigate = useNavigate();
   const shipping = cart.length > 0 ? 25000 : 0;
 
   const handleCheckout = () => {
     if (!user) {
       toast.error("Silakan masuk dulu untuk checkout");
-      return navigate({ to: "/login" });
+      return navigate("/login");
     }
-    navigate({ to: "/shop/checkout" });
+    navigate("/shop/checkout");
   };
 
   if (cart.length === 0) {
@@ -44,22 +39,22 @@ function CartPage() {
         <ul className="space-y-4">
           {cart.map(({ product, qty }) => (
             <li key={product.id} className="flex gap-4 rounded-2xl border border-border bg-card p-4">
-              <Link to="/shop/product/$id" params={{ id: product.id }} className="shrink-0">
+              <Link to={`/shop/product/${product.id}`} className="shrink-0">
                 <img src={product.image_url} alt={product.name} loading="lazy" className="h-24 w-24 rounded-xl object-cover sm:h-28 sm:w-28" />
               </Link>
               <div className="flex flex-1 flex-col gap-1.5">
-                <Link to="/shop/product/$id" params={{ id: product.id }} className="font-display text-base font-semibold leading-tight hover:text-primary line-clamp-2">
+                <Link to={`/shop/product/${product.id}`} className="font-display text-base font-semibold leading-tight hover:text-primary line-clamp-2">
                   {product.name}
                 </Link>
                 <p className="text-xs text-muted-foreground">{product.umkm_name}</p>
                 <p className="font-display text-lg font-bold text-primary">{formatIDR(product.price)}</p>
                 <div className="mt-auto flex items-center justify-between pt-2">
                   <div className="flex items-center rounded-full border border-border">
-                    <button onClick={() => updateQty(product.id, qty - 1)} className="flex h-8 w-8 items-center justify-center text-muted-foreground hover:text-primary"><Minus className="h-3 w-3" /></button>
+                    <button onClick={() => updateQty(product.id, qty - 1)} className="flex h-8 w-8 items-center justify-center text-muted-foreground hover:text-primary cursor-pointer"><Minus className="h-3 w-3" /></button>
                     <span className="w-8 text-center text-sm font-medium">{qty}</span>
-                    <button onClick={() => updateQty(product.id, qty + 1)} className="flex h-8 w-8 items-center justify-center text-muted-foreground hover:text-primary"><Plus className="h-3 w-3" /></button>
+                    <button onClick={() => updateQty(product.id, qty + 1)} className="flex h-8 w-8 items-center justify-center text-muted-foreground hover:text-primary cursor-pointer"><Plus className="h-3 w-3" /></button>
                   </div>
-                  <button onClick={() => removeFromCart(product.id)} className="flex items-center gap-1 text-xs font-medium text-destructive hover:underline">
+                  <button onClick={() => removeFromCart(product.id)} className="flex items-center gap-1 text-xs font-medium text-destructive hover:underline cursor-pointer">
                     <Trash2 className="h-3.5 w-3.5" /> Hapus
                   </button>
                 </div>
@@ -87,7 +82,7 @@ function CartPage() {
           </dl>
           <button
             onClick={handleCheckout}
-            className="mt-6 flex h-12 w-full items-center justify-center gap-2 rounded-full bg-primary font-medium text-primary-foreground shadow-elegant hover:bg-primary-glow"
+            className="mt-6 flex h-12 w-full items-center justify-center gap-2 rounded-full bg-primary font-medium text-primary-foreground shadow-elegant hover:bg-primary-glow cursor-pointer"
           >
             Lanjut ke Checkout <ArrowRight className="h-4 w-4" />
           </button>

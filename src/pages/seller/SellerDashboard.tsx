@@ -1,14 +1,10 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { Link } from "react-router-dom";
 import { Package, ClipboardList, Award, TrendingUp, ShoppingBag } from "lucide-react";
 import { useApp } from "@/context/AppContext";
 import { formatIDR, formatDateID } from "@/lib/mockData";
-import { OrderStatusBadge } from "./admin.transactions";
+import { OrderStatusBadge } from "@/pages/admin/AdminTransactions";
 
-export const Route = createFileRoute("/seller/")({
-  component: SellerDashboard,
-});
-
-function SellerDashboard() {
+export default function SellerDashboard() {
   const { user, products, orders, certificates } = useApp();
   const myProducts = products.filter((p) => p.seller_id === user?.id);
   const myOrders = orders.filter((o) => o.items.some((i) => i.seller_id === user?.id));

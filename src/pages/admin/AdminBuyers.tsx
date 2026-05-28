@@ -1,12 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { useApp } from "@/context/AppContext";
 import { formatIDR } from "@/lib/mockData";
 
-export const Route = createFileRoute("/admin/buyers")({
-  component: AdminBuyers,
-});
-
-function AdminBuyers() {
+export default function AdminBuyers() {
   const { orders } = useApp();
   // Aggregate buyers from order history (mock platform analytics)
   const map = new Map<string, { id: string; name: string; orders: number; spent: number; last: string }>();

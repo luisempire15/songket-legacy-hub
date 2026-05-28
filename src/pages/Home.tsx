@@ -1,20 +1,10 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { Link } from "react-router-dom";
 import { ArrowRight, ShieldCheck, Award, Sparkles, Store } from "lucide-react";
 import heroImg from "@/assets/hero-songket.jpg";
 import { products } from "@/lib/mockData";
 import { ProductCard } from "@/components/site/ProductCard";
 
-export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "UMKM Songket Dekranasda Sumatera Selatan" },
-      { name: "description", content: "Marketplace resmi tenun Songket asli Sumatera Selatan. Dukung pengrajin UMKM lokal." },
-    ],
-  }),
-  component: Index,
-});
-
-function Index() {
+export default function Home() {
   const featured = products.slice(0, 6);
 
   return (

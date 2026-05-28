@@ -1,14 +1,9 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useApp } from "@/context/AppContext";
 
-export const Route = createFileRoute("/login")({
-  head: () => ({ meta: [{ title: "Masuk — Dekranasda Sumsel" }] }),
-  component: LoginPage,
-});
-
-function LoginPage() {
+export default function Login() {
   const { login } = useApp();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
@@ -19,9 +14,9 @@ function LoginPage() {
     const u = login(email, password);
     if (!u) return toast.error("Email atau password salah");
     toast.success(`Selamat datang, ${u.full_name.split(" ")[0]}!`);
-    if (u.role === "admin") navigate({ to: "/admin" });
-    else if (u.role === "seller") navigate({ to: "/seller" });
-    else navigate({ to: "/shop" });
+    if (u.role === "admin") navigate("/admin");
+    else if (u.role === "seller") navigate("/seller");
+    else navigate("/shop");
   };
 
   return (

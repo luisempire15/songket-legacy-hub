@@ -1,4 +1,3 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { Check, X, ZoomIn } from "lucide-react";
 import { toast } from "sonner";
@@ -6,11 +5,7 @@ import { useApp } from "@/context/AppContext";
 import { formatDateID, type CertStatus } from "@/lib/mockData";
 import { cn } from "@/lib/utils";
 
-export const Route = createFileRoute("/admin/certificates")({
-  component: AdminCertificates,
-});
-
-function AdminCertificates() {
+export default function AdminCertificates() {
   const { certificates, reviewCertificate } = useApp();
   const [filter, setFilter] = useState<CertStatus | "All">("Pending");
   const [preview, setPreview] = useState<string | null>(null);
@@ -34,7 +29,7 @@ function AdminCertificates() {
       <div className="mb-6 flex flex-wrap gap-2">
         {(["Pending", "Approved", "Rejected", "All"] as const).map((f) => (
           <button key={f} onClick={() => setFilter(f)} className={cn(
-            "rounded-full px-4 py-1.5 text-sm font-medium",
+            "rounded-full px-4 py-1.5 text-sm font-medium cursor-pointer",
             filter === f ? "bg-primary text-primary-foreground" : "border border-border bg-card hover:border-gold",
           )}>
             {f === "All" ? "Semua" : f} ({certificates.filter((c) => f === "All" || c.status === f).length})
@@ -50,7 +45,7 @@ function AdminCertificates() {
         )}
         {list.map((c) => (
           <div key={c.id} className="overflow-hidden rounded-2xl border border-border bg-card">
-            <button onClick={() => setPreview(c.proof_image)} className="group relative block aspect-video w-full overflow-hidden bg-muted">
+            <button onClick={() => setPreview(c.proof_image)} className="group relative block aspect-video w-full overflow-hidden bg-muted cursor-pointer">
               <img src={c.proof_image} alt={c.product_name} className="h-full w-full object-cover transition-transform group-hover:scale-105" />
               <div className="absolute inset-0 flex items-center justify-center bg-foreground/0 opacity-0 transition-opacity group-hover:bg-foreground/30 group-hover:opacity-100">
                 <ZoomIn className="h-8 w-8 text-white" />
@@ -74,13 +69,13 @@ function AdminCertificates() {
                 <div className="mt-4 flex gap-2">
                   <button
                     onClick={() => { reviewCertificate(c.id, "Approved"); toast.success("Sertifikat disetujui — produk kini bersertifikat resmi"); }}
-                    className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground hover:bg-primary-glow"
+                    className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground hover:bg-primary-glow cursor-pointer"
                   >
                     <Check className="h-3.5 w-3.5" /> Setujui
                   </button>
                   <button
                     onClick={() => handleReject(c.id, c.product_name)}
-                    className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-full border border-destructive px-4 py-2 text-xs font-semibold text-destructive hover:bg-destructive/10"
+                    className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-full border border-destructive px-4 py-2 text-xs font-semibold text-destructive hover:bg-destructive/10 cursor-pointer"
                   >
                     <X className="h-3.5 w-3.5" /> Tolak
                   </button>
@@ -92,7 +87,7 @@ function AdminCertificates() {
       </div>
 
       {preview && (
-        <div onClick={() => setPreview(null)} className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/80 p-4 backdrop-blur">
+        <div onClick={() => setPreview(null)} className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/80 p-4 backdrop-blur cursor-pointer">
           <img src={preview} alt="Preview" className="max-h-[90vh] max-w-full rounded-2xl shadow-elegant" />
         </div>
       )}

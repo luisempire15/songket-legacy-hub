@@ -1,13 +1,8 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { Plus, Pencil, Trash2, Package, X } from "lucide-react";
 import { toast } from "sonner";
 import { useApp } from "@/context/AppContext";
 import { categories, formatIDR, type Category, type Product } from "@/lib/mockData";
-
-export const Route = createFileRoute("/seller/products")({
-  component: SellerProducts,
-});
 
 interface FormState {
   name: string;
@@ -25,7 +20,7 @@ const emptyForm: FormState = {
   category: "Songket Palembang", material: "", image_url: "",
 };
 
-function SellerProducts() {
+export default function Products() {
   const { user, products, addProduct, updateProduct, deleteProduct } = useApp();
   const myProducts = products.filter((p) => p.seller_id === user?.id);
   const [editing, setEditing] = useState<Product | null>(null);
@@ -91,7 +86,7 @@ function SellerProducts() {
           <h1 className="mt-1 font-display text-3xl font-bold">Produk Saya</h1>
           <p className="mt-1 text-sm text-muted-foreground">{myProducts.length} produk aktif di toko Anda.</p>
         </div>
-        <button onClick={openCreate} className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-elegant hover:bg-primary-glow">
+        <button onClick={openCreate} className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-elegant hover:bg-primary-glow cursor-pointer">
           <Plus className="h-4 w-4" /> Tambah Produk
         </button>
       </div>
@@ -139,8 +134,8 @@ function SellerProducts() {
                     </td>
                     <td className="px-4 py-3 text-right">
                       <div className="flex justify-end gap-1.5">
-                        <button onClick={() => openEdit(p)} className="rounded-md p-1.5 text-muted-foreground hover:bg-secondary hover:text-primary"><Pencil className="h-4 w-4" /></button>
-                        <button onClick={() => remove(p)} className="rounded-md p-1.5 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"><Trash2 className="h-4 w-4" /></button>
+                        <button onClick={() => openEdit(p)} className="rounded-md p-1.5 text-muted-foreground hover:bg-secondary hover:text-primary cursor-pointer"><Pencil className="h-4 w-4" /></button>
+                        <button onClick={() => remove(p)} className="rounded-md p-1.5 text-muted-foreground hover:bg-destructive/10 hover:text-destructive cursor-pointer"><Trash2 className="h-4 w-4" /></button>
                       </div>
                     </td>
                   </tr>
@@ -156,7 +151,7 @@ function SellerProducts() {
           <div className="max-h-[92vh] w-full max-w-2xl overflow-y-auto rounded-t-3xl bg-card p-6 sm:rounded-3xl sm:p-8">
             <div className="mb-6 flex items-center justify-between">
               <h2 className="font-display text-xl font-bold">{editing ? "Edit Produk" : "Tambah Produk Baru"}</h2>
-              <button onClick={() => setShowForm(false)} className="rounded-full p-1.5 hover:bg-secondary"><X className="h-5 w-5" /></button>
+              <button onClick={() => setShowForm(false)} className="rounded-full p-1.5 hover:bg-secondary cursor-pointer"><X className="h-5 w-5" /></button>
             </div>
             <form onSubmit={submit} className="space-y-4">
               <FormField label="Nama Produk" value={form.name} onChange={(v) => setForm({ ...form, name: v })} />
@@ -189,8 +184,8 @@ function SellerProducts() {
                 </div>
               </div>
               <div className="flex gap-3 pt-2">
-                <button type="button" onClick={() => setShowForm(false)} className="h-12 flex-1 rounded-full border border-border font-medium hover:bg-secondary">Batal</button>
-                <button type="submit" className="h-12 flex-[2] rounded-full bg-primary font-medium text-primary-foreground shadow-elegant hover:bg-primary-glow">
+                <button type="button" onClick={() => setShowForm(false)} className="h-12 flex-1 rounded-full border border-border font-medium hover:bg-secondary cursor-pointer">Batal</button>
+                <button type="submit" className="h-12 flex-[2] rounded-full bg-primary font-medium text-primary-foreground shadow-elegant hover:bg-primary-glow cursor-pointer">
                   {editing ? "Simpan Perubahan" : "Tambah Produk"}
                 </button>
               </div>

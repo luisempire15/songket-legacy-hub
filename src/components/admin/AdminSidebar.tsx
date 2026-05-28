@@ -1,4 +1,4 @@
-import { Link, useRouterState } from "@tanstack/react-router";
+import { Link, useLocation } from "react-router-dom";
 import { LayoutDashboard, Store, Receipt, ShieldCheck, Users, LogOut } from "lucide-react";
 import { useApp } from "@/context/AppContext";
 import { cn } from "@/lib/utils";
@@ -12,7 +12,7 @@ const items = [
 ];
 
 export function AdminSidebar() {
-  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const { pathname } = useLocation();
   const { user, logout, umkmApps, certificates } = useApp();
   const pendingUmkm = umkmApps.filter((u) => u.status === "Pending").length;
   const pendingCert = certificates.filter((c) => c.status === "Pending").length;
@@ -58,7 +58,7 @@ export function AdminSidebar() {
 }
 
 export function AdminMobileNav() {
-  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const { pathname } = useLocation();
   return (
     <div className="sticky top-16 z-20 flex gap-1 overflow-x-auto border-b border-border bg-background/95 px-3 py-2 backdrop-blur lg:hidden">
       {items.map((it) => {

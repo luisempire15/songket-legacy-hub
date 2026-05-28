@@ -1,16 +1,11 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useApp } from "@/context/AppContext";
 import { formatDateID, formatIDR, type OrderStatus } from "@/lib/mockData";
 import { cn } from "@/lib/utils";
 
-export const Route = createFileRoute("/admin/transactions")({
-  component: AdminTransactions,
-});
-
 const STATUSES: (OrderStatus | "All")[] = ["All", "Pending", "Processing", "Shipped", "Delivered", "Cancelled"];
 
-function AdminTransactions() {
+export default function AdminTransactions() {
   const { orders } = useApp();
   const [filter, setFilter] = useState<OrderStatus | "All">("All");
   const list = orders.filter((o) => filter === "All" || o.status === filter);
@@ -26,7 +21,7 @@ function AdminTransactions() {
       <div className="mb-6 flex flex-wrap gap-2">
         {STATUSES.map((s) => (
           <button key={s} onClick={() => setFilter(s)} className={cn(
-            "rounded-full px-3.5 py-1.5 text-xs font-medium",
+            "rounded-full px-3.5 py-1.5 text-xs font-medium cursor-pointer",
             filter === s ? "bg-primary text-primary-foreground" : "border border-border bg-card hover:border-gold",
           )}>
             {s === "All" ? "Semua" : s}

@@ -1,31 +1,25 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useApp } from "@/context/AppContext";
-import { formatIDR, formatDateID, type Order } from "@/lib/mockData";
-import { OrderStatusBadge } from "./admin.transactions";
+import { formatIDR, formatDateID } from "@/lib/mockData";
 import { toast } from "sonner";
-import { ArrowLeft, ShoppingBag, Truck, Calendar, MapPin, CreditCard, ChevronRight } from "lucide-react";
+import { ArrowLeft, ShoppingBag, Truck, Calendar, MapPin, CreditCard } from "lucide-react";
+import { OrderStatusBadge } from "@/pages/admin/AdminTransactions";
 
-export const Route = createFileRoute("/shop/orders")({
-  head: () => ({ meta: [{ title: "Pesanan Saya — Dekranasda Sumsel" }] }),
-  component: BuyerOrdersPage,
-});
-
-function BuyerOrdersPage() {
+export default function Orders() {
   const { orders, user } = useApp();
   const navigate = useNavigate();
-
-  // Filter orders for currently logged in buyer
-  const myOrders = orders.filter((o) => o.buyer_id === user?.id);
 
   useEffect(() => {
     if (!user) {
       toast.error("Silakan masuk terlebih dahulu");
-      navigate({ to: "/login" });
+      navigate("/login");
     }
   }, [user, navigate]);
 
   if (!user) return null;
+
+  const myOrders = orders.filter((o) => o.buyer_id === user.id);
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-10 lg:px-8 lg:py-14">
@@ -78,7 +72,7 @@ function BuyerOrdersPage() {
                           <img src={item.image_url} alt={item.product_name} className="h-14 w-14 rounded-lg object-cover shrink-0 border border-border" />
                           <div className="min-w-0 flex-1">
                             <h4 className="font-semibold text-sm text-foreground truncate hover:text-primary transition-colors">
-                              <Link to="/shop/product/$id" params={{ id: item.product_id }}>
+                              <Link to={`/shop/product/${item.product_id}`}>
                                 {item.product_name}
                               </Link>
                             </h4>

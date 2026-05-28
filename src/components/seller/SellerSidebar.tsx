@@ -1,4 +1,4 @@
-import { Link, useRouterState } from "@tanstack/react-router";
+import { Link, useLocation } from "react-router-dom";
 import { LayoutDashboard, Package, ClipboardList, Award, LogOut } from "lucide-react";
 import { useApp } from "@/context/AppContext";
 import { cn } from "@/lib/utils";
@@ -11,7 +11,7 @@ const items = [
 ];
 
 export function SellerSidebar() {
-  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const { pathname } = useLocation();
   const { user, logout, orders, certificates } = useApp();
   const pendingOrders = orders.filter((o) => o.items.some((i) => i.seller_id === user?.id) && o.status === "Pending").length;
   const pendingCert = certificates.filter((c) => c.seller_id === user?.id && c.status === "Pending").length;
@@ -49,7 +49,7 @@ export function SellerSidebar() {
 }
 
 export function SellerMobileNav() {
-  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const { pathname } = useLocation();
   return (
     <div className="sticky top-16 z-20 flex gap-1 overflow-x-auto border-b border-border bg-background/95 px-3 py-2 backdrop-blur lg:hidden">
       {items.map((it) => {

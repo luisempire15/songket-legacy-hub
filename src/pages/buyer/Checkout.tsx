@@ -1,16 +1,11 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useApp } from "@/context/AppContext";
 import { formatIDR } from "@/lib/mockData";
 import { toast } from "sonner";
 import { ArrowLeft, MapPin, CreditCard, ShoppingBag, Landmark, Banknote, QrCode } from "lucide-react";
 
-export const Route = createFileRoute("/shop/checkout")({
-  head: () => ({ meta: [{ title: "Checkout — Dekranasda Sumsel" }] }),
-  component: CheckoutPage,
-});
-
-function CheckoutPage() {
+export default function Checkout() {
   const { cart, cartTotal, checkout, user } = useApp();
   const navigate = useNavigate();
 
@@ -21,11 +16,10 @@ function CheckoutPage() {
   const shipping = cart.length > 0 ? 25000 : 0;
   const total = cartTotal + shipping;
 
-  // Protect client-side
   useEffect(() => {
     if (!user) {
       toast.error("Silakan masuk terlebih dahulu");
-      navigate({ to: "/login" });
+      navigate("/login");
     }
   }, [user, navigate]);
 
@@ -54,13 +48,12 @@ function CheckoutPage() {
     
     setIsSubmitting(true);
     
-    // Simulate slight delay for premium feel
     setTimeout(() => {
       try {
         const order = checkout(address, payment);
         if (order) {
           toast.success(`Pesanan ${order.id} sukses dibuat!`);
-          navigate({ to: "/shop/orders" });
+          navigate("/shop/orders");
         } else {
           toast.error("Gagal memproses checkout.");
         }
@@ -180,7 +173,7 @@ function CheckoutPage() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="mt-6 flex h-12 w-full items-center justify-center gap-2 rounded-full bg-primary font-medium text-primary-foreground shadow-elegant hover:bg-primary-glow disabled:opacity-50 disabled:cursor-not-allowed"
+            className="mt-6 flex h-12 w-full items-center justify-center gap-2 rounded-full bg-primary font-medium text-primary-foreground shadow-elegant hover:bg-primary-glow disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
             {isSubmitting ? (
               <span className="flex items-center gap-2">

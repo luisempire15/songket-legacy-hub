@@ -1,4 +1,3 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { Award, Upload, X } from "lucide-react";
 import { toast } from "sonner";
@@ -6,11 +5,7 @@ import { useApp } from "@/context/AppContext";
 import { formatDateID, type CertStatus } from "@/lib/mockData";
 import { cn } from "@/lib/utils";
 
-export const Route = createFileRoute("/seller/certificates")({
-  component: SellerCertificates,
-});
-
-function SellerCertificates() {
+export default function Certification() {
   const { user, products, certificates, requestCertificate } = useApp();
   const myProducts = products.filter((p) => p.seller_id === user?.id);
   const myCerts = certificates.filter((c) => c.seller_id === user?.id);
@@ -52,7 +47,7 @@ function SellerCertificates() {
           <h1 className="mt-1 font-display text-3xl font-bold">Sertifikat Keaslian</h1>
           <p className="mt-1 text-sm text-muted-foreground">Ajukan sertifikasi resmi Dekranasda untuk produk Anda.</p>
         </div>
-        <button onClick={() => setShow(true)} className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-elegant hover:bg-primary-glow">
+        <button onClick={() => setShow(true)} className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-elegant hover:bg-primary-glow cursor-pointer">
           <Award className="h-4 w-4" /> Ajukan Sertifikat Baru
         </button>
       </div>
@@ -89,7 +84,7 @@ function SellerCertificates() {
           <div className="max-h-[92vh] w-full max-w-lg overflow-y-auto rounded-t-3xl bg-card p-6 sm:rounded-3xl sm:p-8">
             <div className="mb-6 flex items-center justify-between">
               <h2 className="font-display text-xl font-bold">Ajukan Sertifikat Keaslian</h2>
-              <button onClick={() => setShow(false)} className="rounded-full p-1.5 hover:bg-secondary"><X className="h-5 w-5" /></button>
+              <button onClick={() => setShow(false)} className="rounded-full p-1.5 hover:bg-secondary cursor-pointer"><X className="h-5 w-5" /></button>
             </div>
             <form onSubmit={submit} className="space-y-4">
               <div>
@@ -123,8 +118,8 @@ function SellerCertificates() {
                 )}
               </div>
               <div className="flex gap-3 pt-2">
-                <button type="button" onClick={() => setShow(false)} className="h-12 flex-1 rounded-full border border-border font-medium hover:bg-secondary">Batal</button>
-                <button type="submit" className="h-12 flex-[2] rounded-full bg-primary font-medium text-primary-foreground shadow-elegant hover:bg-primary-glow">
+                <button type="button" onClick={() => setShow(false)} className="h-12 flex-1 rounded-full border border-border font-medium hover:bg-secondary cursor-pointer">Batal</button>
+                <button type="submit" className="h-12 flex-[2] rounded-full bg-primary font-medium text-primary-foreground shadow-elegant hover:bg-primary-glow cursor-pointer">
                   Kirim Pengajuan
                 </button>
               </div>

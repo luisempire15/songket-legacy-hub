@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate } from "react-router-dom";
 import { useApp, type Role } from "@/context/AppContext";
 
 export function RoleGuard({ roles, children }: { roles: Role[]; children: React.ReactNode }) {
@@ -9,9 +9,9 @@ export function RoleGuard({ roles, children }: { roles: Role[]; children: React.
   useEffect(() => {
     if (typeof window === "undefined") return;
     if (!user) {
-      navigate({ to: "/login" });
+      navigate("/login");
     } else if (!roles.includes(user.role)) {
-      navigate({ to: "/" });
+      navigate("/");
     }
   }, [user, roles, navigate]);
 

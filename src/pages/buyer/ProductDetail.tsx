@@ -1,52 +1,27 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { Link, useParams } from "react-router-dom";
 import { useState } from "react";
 import { Star, Store, Minus, Plus, ShoppingBag, Truck, ShieldCheck, ArrowLeft, Award } from "lucide-react";
 import { toast } from "sonner";
-import { products, formatIDR } from "@/lib/mockData";
+import { formatIDR } from "@/lib/mockData";
 import { useApp } from "@/context/AppContext";
 import { ProductCard } from "@/components/site/ProductCard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-export const Route = createFileRoute("/shop/product/$id")({
-  loader: ({ params }) => {
-    let localProducts = [];
-    if (typeof window !== "undefined") {
-      try {
-        const raw = localStorage.getItem("dekranasda_products");
-        if (raw) localProducts = JSON.parse(raw);
-      } catch (e) {
-        console.error("Failed to load products from localStorage in loader", e);
-      }
-    }
-    const p = localProducts.find((x: any) => x.id === params.id) || products.find((x) => x.id === params.id);
-    if (!p) throw notFound();
-    return { product: p };
-  },
-  head: ({ loaderData }) => ({
-    meta: loaderData
-      ? [
-          { title: `${loaderData.product.name} — Dekranasda Sumsel` },
-          { name: "description", content: loaderData.product.description.slice(0, 160) },
-          { property: "og:image", content: loaderData.product.image_url },
-        ]
-      : [],
-  }),
-  notFoundComponent: () => (
-    <div className="mx-auto max-w-2xl px-4 py-32 text-center">
-      <h1 className="font-display text-3xl">Produk tidak ditemukan</h1>
-      <Link to="/shop" className="mt-6 inline-block text-primary underline">Kembali ke Koleksi</Link>
-    </div>
-  ),
-  component: ProductDetail,
-});
-
-function ProductDetail() {
-  const { id } = Route.useParams();
-  const { product: loaderProduct } = Route.useLoaderData();
+export default function ProductDetail() {
+  const { id } = useParams<{ id: string }>();
   const { addToCart, products: ctxProducts } = useApp();
-  // Prefer up-to-date product from context (certified flag may change)
-  const product = ctxProducts.find((p) => p.id === id) ?? loaderProduct;
+  const product = ctxProducts.find((p) => p.id === id);
   const [qty, setQty] = useState(1);
+
+  if (!product) {
+    return (
+      <div className="mx-auto max-w-2xl px-4 py-32 text-center">
+        <h1 className="font-display text-3xl">Produk tidak ditemukan</h1>
+        <Link to="/shop" className="mt-6 inline-block text-primary underline">Kembali ke Koleksi</Link>
+      </div>
+    );
+  }
+
   const related = ctxProducts.filter((p) => p.category === product.category && p.id !== product.id).slice(0, 4);
 
   const handleAdd = () => {
@@ -140,7 +115,7 @@ function ProductDetail() {
             </div>
             <button
               onClick={handleAdd}
-              className="flex h-12 flex-1 items-center justify-center gap-2 rounded-full bg-primary px-6 font-medium text-primary-foreground shadow-elegant transition-colors hover:bg-primary-glow"
+              className="flex h-12 flex-1 items-center justify-center gap-2 rounded-full bg-primary px-6 font-medium text-primary-foreground shadow-elegant transition-colors hover:bg-primary-glow cursor-pointer"
             >
               <ShoppingBag className="h-4 w-4" /> Tambah ke Keranjang
             </button>

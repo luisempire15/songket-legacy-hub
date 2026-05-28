@@ -1,16 +1,11 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
 import { Check, X, MapPin, Mail, Phone } from "lucide-react";
 import { toast } from "sonner";
 import { useApp } from "@/context/AppContext";
 import { formatDateID, type UmkmStatus } from "@/lib/mockData";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
 
-export const Route = createFileRoute("/admin/umkm")({
-  component: AdminUmkm,
-});
-
-function AdminUmkm() {
+export default function AdminUmkm() {
   const { umkmApps, reviewUmkm } = useApp();
   const [filter, setFilter] = useState<UmkmStatus | "All">("Pending");
   const list = umkmApps.filter((u) => filter === "All" || u.status === filter);
@@ -29,7 +24,7 @@ function AdminUmkm() {
             key={f}
             onClick={() => setFilter(f)}
             className={cn(
-              "rounded-full px-4 py-1.5 text-sm font-medium transition-colors",
+              "rounded-full px-4 py-1.5 text-sm font-medium transition-colors cursor-pointer",
               filter === f ? "bg-primary text-primary-foreground" : "border border-border bg-card hover:border-gold",
             )}
           >
@@ -66,13 +61,13 @@ function AdminUmkm() {
                 <div className="flex gap-2">
                   <button
                     onClick={() => { reviewUmkm(u.id, "Approved"); toast.success(`${u.umkm_name} disetujui`); }}
-                    className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground hover:bg-primary-glow"
+                    className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground hover:bg-primary-glow cursor-pointer"
                   >
                     <Check className="h-3.5 w-3.5" /> Setujui
                   </button>
                   <button
                     onClick={() => { reviewUmkm(u.id, "Rejected"); toast.error(`${u.umkm_name} ditolak`); }}
-                    className="inline-flex items-center gap-1.5 rounded-full border border-destructive px-4 py-2 text-xs font-semibold text-destructive hover:bg-destructive/10"
+                    className="inline-flex items-center gap-1.5 rounded-full border border-destructive px-4 py-2 text-xs font-semibold text-destructive hover:bg-destructive/10 cursor-pointer"
                   >
                     <X className="h-3.5 w-3.5" /> Tolak
                   </button>

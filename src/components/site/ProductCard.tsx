@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { Link } from "react-router-dom";
 import { Star, Store } from "lucide-react";
 import { formatIDR, type Product } from "@/lib/mockData";
 
@@ -8,8 +8,7 @@ export function ProductCard({ product }: { product: Product }) {
     : 0;
   return (
     <Link
-      to="/shop/product/$id"
-      params={{ id: product.id }}
+      to={`/shop/product/${product.id}`}
       className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card transition-all hover:-translate-y-1 hover:border-gold hover:shadow-elegant"
     >
       <div className="relative aspect-[3/4] overflow-hidden bg-muted">

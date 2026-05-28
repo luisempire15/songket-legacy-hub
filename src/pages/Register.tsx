@@ -1,16 +1,11 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { ShoppingBag, Store, Check } from "lucide-react";
 import { toast } from "sonner";
 import { useApp, type Role } from "@/context/AppContext";
 import { cn } from "@/lib/utils";
 
-export const Route = createFileRoute("/register")({
-  head: () => ({ meta: [{ title: "Daftar — Dekranasda Sumsel" }] }),
-  component: RegisterPage,
-});
-
-function RegisterPage() {
+export default function Register() {
   const { register } = useApp();
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
@@ -31,7 +26,7 @@ function RegisterPage() {
     } else {
       toast.success(`Selamat datang, ${form.full_name.split(" ")[0]}!`);
     }
-    navigate({ to: "/shop" });
+    navigate("/shop");
   };
 
   return (

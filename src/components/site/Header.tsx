@@ -1,4 +1,4 @@
-import { Link, useRouterState } from "@tanstack/react-router";
+import { Link, useLocation } from "react-router-dom";
 import { ShoppingBag, User, Menu, X, Search } from "lucide-react";
 import { useState } from "react";
 import { useApp } from "@/context/AppContext";
@@ -12,7 +12,7 @@ const NAV = [
 
 export function Header() {
   const { cartCount, user, logout } = useApp();
-  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const { pathname } = useLocation();
   const [open, setOpen] = useState(false);
 
   return (

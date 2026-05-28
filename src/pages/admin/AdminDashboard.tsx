@@ -1,13 +1,9 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { Link } from "react-router-dom";
 import { Store, Receipt, ShieldCheck, Users, TrendingUp, Package } from "lucide-react";
 import { useApp } from "@/context/AppContext";
 import { formatIDR, formatDateID } from "@/lib/mockData";
 
-export const Route = createFileRoute("/admin/")({
-  component: AdminOverview,
-});
-
-function AdminOverview() {
+export default function AdminDashboard() {
   const { umkmApps, orders, certificates, products } = useApp();
   const totalRevenue = orders.reduce((s, o) => s + o.total, 0);
   const pendingUmkm = umkmApps.filter((u) => u.status === "Pending").length;

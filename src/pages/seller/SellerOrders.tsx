@@ -1,17 +1,12 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { Package, Truck, X } from "lucide-react";
 import { toast } from "sonner";
 import { useApp } from "@/context/AppContext";
 import { formatDateID, formatIDR, type OrderStatus, type Order } from "@/lib/mockData";
 import { cn } from "@/lib/utils";
-import { OrderStatusBadge } from "./admin.transactions";
+import { OrderStatusBadge } from "@/pages/admin/AdminTransactions";
 
-export const Route = createFileRoute("/seller/orders")({
-  component: SellerOrders,
-});
-
-function SellerOrders() {
+export default function SellerOrders() {
   const { user, orders, updateOrderStatus } = useApp();
   const [filter, setFilter] = useState<OrderStatus | "All">("All");
   const [tracking, setTracking] = useState<{ order: Order; value: string } | null>(null);
@@ -49,7 +44,7 @@ function SellerOrders() {
       <div className="mb-6 flex flex-wrap gap-2">
         {(["All", "Pending", "Processing", "Shipped", "Delivered", "Cancelled"] as const).map((s) => (
           <button key={s} onClick={() => setFilter(s)} className={cn(
-            "rounded-full px-3.5 py-1.5 text-xs font-medium",
+            "rounded-full px-3.5 py-1.5 text-xs font-medium cursor-pointer",
             filter === s ? "bg-primary text-primary-foreground" : "border border-border bg-card hover:border-gold",
           )}>
             {s === "All" ? "Semua" : s}
@@ -97,22 +92,22 @@ function SellerOrders() {
 
               <div className="mt-4 flex flex-wrap gap-2 border-t border-border pt-4">
                 {o.status === "Pending" && (
-                  <button onClick={() => changeStatus(o, "Processing")} className="rounded-full bg-primary px-4 py-1.5 text-xs font-semibold text-primary-foreground hover:bg-primary-glow">
+                  <button onClick={() => changeStatus(o, "Processing")} className="rounded-full bg-primary px-4 py-1.5 text-xs font-semibold text-primary-foreground hover:bg-primary-glow cursor-pointer">
                     Terima & Proses
                   </button>
                 )}
                 {o.status === "Processing" && (
-                  <button onClick={() => changeStatus(o, "Shipped")} className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-1.5 text-xs font-semibold text-primary-foreground hover:bg-primary-glow">
+                  <button onClick={() => changeStatus(o, "Shipped")} className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-1.5 text-xs font-semibold text-primary-foreground hover:bg-primary-glow cursor-pointer">
                     <Truck className="h-3.5 w-3.5" /> Kirim Pesanan
                   </button>
                 )}
                 {o.status === "Shipped" && (
-                  <button onClick={() => changeStatus(o, "Delivered")} className="rounded-full bg-primary px-4 py-1.5 text-xs font-semibold text-primary-foreground hover:bg-primary-glow">
+                  <button onClick={() => changeStatus(o, "Delivered")} className="rounded-full bg-primary px-4 py-1.5 text-xs font-semibold text-primary-foreground hover:bg-primary-glow cursor-pointer">
                     Tandai Diterima
                   </button>
                 )}
                 {(o.status === "Pending" || o.status === "Processing") && (
-                  <button onClick={() => changeStatus(o, "Cancelled")} className="rounded-full border border-destructive px-4 py-1.5 text-xs font-semibold text-destructive hover:bg-destructive/10">
+                  <button onClick={() => changeStatus(o, "Cancelled")} className="rounded-full border border-destructive px-4 py-1.5 text-xs font-semibold text-destructive hover:bg-destructive/10 cursor-pointer">
                     Batalkan
                   </button>
                 )}
@@ -127,7 +122,7 @@ function SellerOrders() {
           <div className="w-full max-w-md rounded-3xl bg-card p-6">
             <div className="mb-4 flex items-center justify-between">
               <h3 className="font-display text-lg font-bold">Input Nomor Resi</h3>
-              <button onClick={() => setTracking(null)} className="rounded-full p-1.5 hover:bg-secondary"><X className="h-5 w-5" /></button>
+              <button onClick={() => setTracking(null)} className="rounded-full p-1.5 hover:bg-secondary cursor-pointer"><X className="h-5 w-5" /></button>
             </div>
             <p className="mb-4 text-sm text-muted-foreground">Pesanan <span className="font-mono font-semibold text-foreground">{tracking.order.id}</span> akan dikirim ke {tracking.order.shipping_address}.</p>
             <input
@@ -137,8 +132,8 @@ function SellerOrders() {
               className="h-12 w-full rounded-xl border border-border bg-background px-4 text-sm outline-none focus:border-gold focus:ring-2 focus:ring-gold/30"
             />
             <div className="mt-4 flex gap-2">
-              <button onClick={() => setTracking(null)} className="h-12 flex-1 rounded-full border border-border text-sm font-medium hover:bg-secondary">Batal</button>
-              <button onClick={confirmShip} className="h-12 flex-[2] rounded-full bg-primary text-sm font-medium text-primary-foreground shadow-elegant hover:bg-primary-glow">
+              <button onClick={() => setTracking(null)} className="h-12 flex-1 rounded-full border border-border text-sm font-medium hover:bg-secondary cursor-pointer">Batal</button>
+              <button onClick={confirmShip} className="h-12 flex-[2] rounded-full bg-primary text-sm font-medium text-primary-foreground shadow-elegant hover:bg-primary-glow cursor-pointer">
                 Konfirmasi Kirim
               </button>
             </div>

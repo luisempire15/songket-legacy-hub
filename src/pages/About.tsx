@@ -1,12 +1,6 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { Award, ShieldCheck, HeartHandshake, Users } from "lucide-react";
 
-export const Route = createFileRoute("/about")({
-  head: () => ({ meta: [{ title: "Tentang — Dekranasda Sumsel" }] }),
-  component: About,
-});
-
-function About() {
+export default function About() {
   return (
     <div className="mx-auto max-w-4xl px-4 py-16 lg:py-24">
       <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gold">Tentang Kami</p>
