@@ -10,16 +10,32 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ShopRouteImport } from './routes/shop'
+import { Route as SellerRouteImport } from './routes/seller'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as CartRouteImport } from './routes/cart'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as SellerIndexRouteImport } from './routes/seller.index'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as SellerProductsRouteImport } from './routes/seller.products'
+import { Route as SellerOrdersRouteImport } from './routes/seller.orders'
+import { Route as SellerCertificatesRouteImport } from './routes/seller.certificates'
+import { Route as AdminUmkmRouteImport } from './routes/admin.umkm'
+import { Route as AdminTransactionsRouteImport } from './routes/admin.transactions'
+import { Route as AdminCertificatesRouteImport } from './routes/admin.certificates'
+import { Route as AdminBuyersRouteImport } from './routes/admin.buyers'
 import { Route as ShopProductIdRouteImport } from './routes/shop.product.$id'
 
 const ShopRoute = ShopRouteImport.update({
   id: '/shop',
   path: '/shop',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SellerRoute = SellerRouteImport.update({
+  id: '/seller',
+  path: '/seller',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RegisterRoute = RegisterRouteImport.update({
@@ -37,6 +53,11 @@ const CartRoute = CartRouteImport.update({
   path: '/cart',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
@@ -47,6 +68,51 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SellerIndexRoute = SellerIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => SellerRoute,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const SellerProductsRoute = SellerProductsRouteImport.update({
+  id: '/products',
+  path: '/products',
+  getParentRoute: () => SellerRoute,
+} as any)
+const SellerOrdersRoute = SellerOrdersRouteImport.update({
+  id: '/orders',
+  path: '/orders',
+  getParentRoute: () => SellerRoute,
+} as any)
+const SellerCertificatesRoute = SellerCertificatesRouteImport.update({
+  id: '/certificates',
+  path: '/certificates',
+  getParentRoute: () => SellerRoute,
+} as any)
+const AdminUmkmRoute = AdminUmkmRouteImport.update({
+  id: '/umkm',
+  path: '/umkm',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminTransactionsRoute = AdminTransactionsRouteImport.update({
+  id: '/transactions',
+  path: '/transactions',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminCertificatesRoute = AdminCertificatesRouteImport.update({
+  id: '/certificates',
+  path: '/certificates',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminBuyersRoute = AdminBuyersRouteImport.update({
+  id: '/buyers',
+  path: '/buyers',
+  getParentRoute: () => AdminRoute,
+} as any)
 const ShopProductIdRoute = ShopProductIdRouteImport.update({
   id: '/product/$id',
   path: '/product/$id',
@@ -56,10 +122,21 @@ const ShopProductIdRoute = ShopProductIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/admin': typeof AdminRouteWithChildren
   '/cart': typeof CartRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/seller': typeof SellerRouteWithChildren
   '/shop': typeof ShopRouteWithChildren
+  '/admin/buyers': typeof AdminBuyersRoute
+  '/admin/certificates': typeof AdminCertificatesRoute
+  '/admin/transactions': typeof AdminTransactionsRoute
+  '/admin/umkm': typeof AdminUmkmRoute
+  '/seller/certificates': typeof SellerCertificatesRoute
+  '/seller/orders': typeof SellerOrdersRoute
+  '/seller/products': typeof SellerProductsRoute
+  '/admin/': typeof AdminIndexRoute
+  '/seller/': typeof SellerIndexRoute
   '/shop/product/$id': typeof ShopProductIdRoute
 }
 export interface FileRoutesByTo {
@@ -69,16 +146,36 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/shop': typeof ShopRouteWithChildren
+  '/admin/buyers': typeof AdminBuyersRoute
+  '/admin/certificates': typeof AdminCertificatesRoute
+  '/admin/transactions': typeof AdminTransactionsRoute
+  '/admin/umkm': typeof AdminUmkmRoute
+  '/seller/certificates': typeof SellerCertificatesRoute
+  '/seller/orders': typeof SellerOrdersRoute
+  '/seller/products': typeof SellerProductsRoute
+  '/admin': typeof AdminIndexRoute
+  '/seller': typeof SellerIndexRoute
   '/shop/product/$id': typeof ShopProductIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/admin': typeof AdminRouteWithChildren
   '/cart': typeof CartRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/seller': typeof SellerRouteWithChildren
   '/shop': typeof ShopRouteWithChildren
+  '/admin/buyers': typeof AdminBuyersRoute
+  '/admin/certificates': typeof AdminCertificatesRoute
+  '/admin/transactions': typeof AdminTransactionsRoute
+  '/admin/umkm': typeof AdminUmkmRoute
+  '/seller/certificates': typeof SellerCertificatesRoute
+  '/seller/orders': typeof SellerOrdersRoute
+  '/seller/products': typeof SellerProductsRoute
+  '/admin/': typeof AdminIndexRoute
+  '/seller/': typeof SellerIndexRoute
   '/shop/product/$id': typeof ShopProductIdRoute
 }
 export interface FileRouteTypes {
@@ -86,10 +183,21 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/admin'
     | '/cart'
     | '/login'
     | '/register'
+    | '/seller'
     | '/shop'
+    | '/admin/buyers'
+    | '/admin/certificates'
+    | '/admin/transactions'
+    | '/admin/umkm'
+    | '/seller/certificates'
+    | '/seller/orders'
+    | '/seller/products'
+    | '/admin/'
+    | '/seller/'
     | '/shop/product/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -99,24 +207,46 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/shop'
+    | '/admin/buyers'
+    | '/admin/certificates'
+    | '/admin/transactions'
+    | '/admin/umkm'
+    | '/seller/certificates'
+    | '/seller/orders'
+    | '/seller/products'
+    | '/admin'
+    | '/seller'
     | '/shop/product/$id'
   id:
     | '__root__'
     | '/'
     | '/about'
+    | '/admin'
     | '/cart'
     | '/login'
     | '/register'
+    | '/seller'
     | '/shop'
+    | '/admin/buyers'
+    | '/admin/certificates'
+    | '/admin/transactions'
+    | '/admin/umkm'
+    | '/seller/certificates'
+    | '/seller/orders'
+    | '/seller/products'
+    | '/admin/'
+    | '/seller/'
     | '/shop/product/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  AdminRoute: typeof AdminRouteWithChildren
   CartRoute: typeof CartRoute
   LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
+  SellerRoute: typeof SellerRouteWithChildren
   ShopRoute: typeof ShopRouteWithChildren
 }
 
@@ -127,6 +257,13 @@ declare module '@tanstack/react-router' {
       path: '/shop'
       fullPath: '/shop'
       preLoaderRoute: typeof ShopRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/seller': {
+      id: '/seller'
+      path: '/seller'
+      fullPath: '/seller'
+      preLoaderRoute: typeof SellerRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/register': {
@@ -150,6 +287,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CartRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/about': {
       id: '/about'
       path: '/about'
@@ -164,6 +308,69 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/seller/': {
+      id: '/seller/'
+      path: '/'
+      fullPath: '/seller/'
+      preLoaderRoute: typeof SellerIndexRouteImport
+      parentRoute: typeof SellerRoute
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/seller/products': {
+      id: '/seller/products'
+      path: '/products'
+      fullPath: '/seller/products'
+      preLoaderRoute: typeof SellerProductsRouteImport
+      parentRoute: typeof SellerRoute
+    }
+    '/seller/orders': {
+      id: '/seller/orders'
+      path: '/orders'
+      fullPath: '/seller/orders'
+      preLoaderRoute: typeof SellerOrdersRouteImport
+      parentRoute: typeof SellerRoute
+    }
+    '/seller/certificates': {
+      id: '/seller/certificates'
+      path: '/certificates'
+      fullPath: '/seller/certificates'
+      preLoaderRoute: typeof SellerCertificatesRouteImport
+      parentRoute: typeof SellerRoute
+    }
+    '/admin/umkm': {
+      id: '/admin/umkm'
+      path: '/umkm'
+      fullPath: '/admin/umkm'
+      preLoaderRoute: typeof AdminUmkmRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/transactions': {
+      id: '/admin/transactions'
+      path: '/transactions'
+      fullPath: '/admin/transactions'
+      preLoaderRoute: typeof AdminTransactionsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/certificates': {
+      id: '/admin/certificates'
+      path: '/certificates'
+      fullPath: '/admin/certificates'
+      preLoaderRoute: typeof AdminCertificatesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/buyers': {
+      id: '/admin/buyers'
+      path: '/buyers'
+      fullPath: '/admin/buyers'
+      preLoaderRoute: typeof AdminBuyersRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/shop/product/$id': {
       id: '/shop/product/$id'
       path: '/product/$id'
@@ -173,6 +380,41 @@ declare module '@tanstack/react-router' {
     }
   }
 }
+
+interface AdminRouteChildren {
+  AdminBuyersRoute: typeof AdminBuyersRoute
+  AdminCertificatesRoute: typeof AdminCertificatesRoute
+  AdminTransactionsRoute: typeof AdminTransactionsRoute
+  AdminUmkmRoute: typeof AdminUmkmRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminBuyersRoute: AdminBuyersRoute,
+  AdminCertificatesRoute: AdminCertificatesRoute,
+  AdminTransactionsRoute: AdminTransactionsRoute,
+  AdminUmkmRoute: AdminUmkmRoute,
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
+interface SellerRouteChildren {
+  SellerCertificatesRoute: typeof SellerCertificatesRoute
+  SellerOrdersRoute: typeof SellerOrdersRoute
+  SellerProductsRoute: typeof SellerProductsRoute
+  SellerIndexRoute: typeof SellerIndexRoute
+}
+
+const SellerRouteChildren: SellerRouteChildren = {
+  SellerCertificatesRoute: SellerCertificatesRoute,
+  SellerOrdersRoute: SellerOrdersRoute,
+  SellerProductsRoute: SellerProductsRoute,
+  SellerIndexRoute: SellerIndexRoute,
+}
+
+const SellerRouteWithChildren =
+  SellerRoute._addFileChildren(SellerRouteChildren)
 
 interface ShopRouteChildren {
   ShopProductIdRoute: typeof ShopProductIdRoute
@@ -187,9 +429,11 @@ const ShopRouteWithChildren = ShopRoute._addFileChildren(ShopRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  AdminRoute: AdminRouteWithChildren,
   CartRoute: CartRoute,
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
+  SellerRoute: SellerRouteWithChildren,
   ShopRoute: ShopRouteWithChildren,
 }
 export const routeTree = rootRouteImport

@@ -68,6 +68,12 @@ export function Header() {
           </Link>
           {user ? (
             <div className="hidden items-center gap-2 sm:flex">
+              {user.role === "admin" && (
+                <Link to="/admin" className="rounded-full bg-gold/15 px-3 py-1 text-xs font-semibold text-primary hover:bg-gold/25">Admin</Link>
+              )}
+              {user.role === "seller" && (
+                <Link to="/seller" className="rounded-full bg-gold/15 px-3 py-1 text-xs font-semibold text-primary hover:bg-gold/25">Seller</Link>
+              )}
               <span className="rounded-full bg-secondary px-3 py-1 text-xs font-medium text-secondary-foreground">
                 {user.full_name.split(" ")[0]}
               </span>

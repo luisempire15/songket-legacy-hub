@@ -19,7 +19,9 @@ function LoginPage() {
     const u = login(email, password);
     if (!u) return toast.error("Email atau password salah");
     toast.success(`Selamat datang, ${u.full_name.split(" ")[0]}!`);
-    navigate({ to: "/shop" });
+    if (u.role === "admin") navigate({ to: "/admin" });
+    else if (u.role === "seller") navigate({ to: "/seller" });
+    else navigate({ to: "/shop" });
   };
 
   return (
