@@ -1,11 +1,13 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Minus, Plus, Trash2, ShoppingBag, ArrowRight } from "lucide-react";
-import { useApp } from "@/context/AppContext";
+import { useCartController } from "@/hooks/useCartController";
+import { useAuthController } from "@/hooks/useAuthController";
 import { formatIDR } from "@/lib/mockData";
 import { toast } from "sonner";
 
 export default function Cart() {
-  const { cart, updateQty, removeFromCart, cartTotal, user } = useApp();
+  const { cart, updateQty, removeFromCart, cartTotal } = useCartController();
+  const { user } = useAuthController();
   const navigate = useNavigate();
   const shipping = cart.length > 0 ? 25000 : 0;
 

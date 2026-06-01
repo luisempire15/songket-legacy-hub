@@ -1,14 +1,19 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Check, X, ZoomIn } from "lucide-react";
 import { toast } from "sonner";
-import { useApp } from "@/context/AppContext";
+import { useAdminController } from "@/hooks/useAdminController";
 import { formatDateID, type CertStatus } from "@/lib/mockData";
 import { cn } from "@/lib/utils";
 
 export default function AdminCertificates() {
-  const { certificates, reviewCertificate } = useApp();
+  const { certificates, reviewCertificate, fetchCertificates } = useAdminController();
   const [filter, setFilter] = useState<CertStatus | "All">("Pending");
   const [preview, setPreview] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchCertificates();
+  }, [fetchCertificates]);
+
   const list = certificates.filter((c) => filter === "All" || c.status === filter);
 
   const handleReject = (id: string, name: string) => {

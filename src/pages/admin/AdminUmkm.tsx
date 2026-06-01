@@ -1,13 +1,18 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Check, X, MapPin, Mail, Phone } from "lucide-react";
 import { toast } from "sonner";
-import { useApp } from "@/context/AppContext";
+import { useAdminController } from "@/hooks/useAdminController";
 import { formatDateID, type UmkmStatus } from "@/lib/mockData";
 import { cn } from "@/lib/utils";
 
 export default function AdminUmkm() {
-  const { umkmApps, reviewUmkm } = useApp();
+  const { umkmApps, reviewUmkm, fetchUmkmApps } = useAdminController();
   const [filter, setFilter] = useState<UmkmStatus | "All">("Pending");
+
+  useEffect(() => {
+    fetchUmkmApps();
+  }, [fetchUmkmApps]);
+
   const list = umkmApps.filter((u) => filter === "All" || u.status === filter);
 
   return (

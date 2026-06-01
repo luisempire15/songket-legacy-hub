@@ -1,21 +1,42 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import { useApp } from "@/context/AppContext";
+import { useAuthController } from "@/hooks/useAuthController";
+import { useOrderController } from "@/hooks/useOrderController";
 import { formatIDR, formatDateID } from "@/lib/mockData";
 import { toast } from "sonner";
 import { ArrowLeft, ShoppingBag, Truck, Calendar, MapPin, CreditCard } from "lucide-react";
-import { OrderStatusBadge } from "@/pages/admin/AdminTransactions";
+import { cn } from "@/lib/utils";
+
+function OrderStatusBadge({ status }: { status: string }) {
+  const map: Record<string, { label: string; class: string }> = {
+    Pending: { label: "Pending", class: "bg-gold/20 text-primary border border-gold/30" },
+    Processing: { label: "Diproses", class: "bg-blue-50 text-blue-700 border border-blue-200" },
+    Shipped: { label: "Dikirim", class: "bg-indigo-50 text-indigo-700 border border-indigo-200" },
+    Delivered: { label: "Selesai", class: "bg-emerald-50 text-emerald-700 border border-emerald-200" },
+    Completed: { label: "Selesai", class: "bg-emerald-50 text-emerald-700 border border-emerald-200" },
+    Cancelled: { label: "Dibatalkan", class: "bg-destructive/10 text-destructive border border-destructive/20" },
+  };
+  const config = map[status] || { label: status, class: "bg-muted text-muted-foreground" };
+  return (
+    <span className={cn("rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider", config.class)}>
+      {config.label}
+    </span>
+  );
+}
 
 export default function Orders() {
-  const { orders, user } = useApp();
+  const { user } = useAuthController();
+  const { orders, fetchBuyerOrders } = useOrderController();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (!user) {
       toast.error("Silakan masuk terlebih dahulu");
       navigate("/login");
+    } else {
+      fetchBuyerOrders(user.id);
     }
-  }, [user, navigate]);
+  }, [user, navigate, fetchBuyerOrders]);
 
   if (!user) return null;
 
@@ -58,6 +79,64 @@ export default function Orders() {
                 <div>
                   <OrderStatusBadge status={order.status} />
                 </div>
+              </div>
+
+              {/* Order Tracking Progress Bar */}
+              <div className="border-b border-border bg-card px-6 py-6 sm:px-12">
+                <div className="relative flex items-center justify-between">
+                  {/* Progress Line */}
+                  <div className="absolute left-0 top-1/2 h-0.5 w-full -translate-y-1/2 bg-secondary">
+                    <div 
+                      className="h-full bg-gold transition-all duration-500" 
+                      style={{ 
+                        width: order.status === "Pending" ? "0%" :
+                               order.status === "Processing" ? "33.3%" :
+                               order.status === "Shipped" ? "66.6%" :
+                               order.status === "Delivered" || order.status === "Completed" ? "100%" : "0%"
+                      }} 
+                    />
+                  </div>
+
+                  {/* Steps */}
+                  {[
+                    { label: "Menunggu", statusKey: "Pending" },
+                    { label: "Diproses", statusKey: "Processing" },
+                    { label: "Dikirim", statusKey: "Shipped" },
+                    { label: "Selesai", statusKey: "Completed" }
+                  ].map((step, idx) => {
+                    const statusOrder = ["Pending", "Processing", "Shipped", "Delivered", "Completed"];
+                    
+                    let currentStatus = order.status;
+                    if (currentStatus === "Delivered") currentStatus = "Completed";
+                    
+                    const currentIdx = statusOrder.indexOf(currentStatus);
+                    let stepIdx = statusOrder.indexOf(step.statusKey);
+                    if (step.statusKey === "Completed") stepIdx = 3; 
+
+                    const isCompleted = currentIdx >= stepIdx && order.status !== "Cancelled";
+                    const isActive = currentIdx === stepIdx && order.status !== "Cancelled";
+
+                    return (
+                      <div key={step.label} className="relative z-10 flex flex-col items-center">
+                        <div className={cn(
+                          "flex h-8 w-8 items-center justify-center rounded-full border-2 transition-all duration-300 text-xs font-bold shadow-sm",
+                          isCompleted 
+                            ? "border-gold bg-gold text-gold-foreground" 
+                            : "border-border bg-card text-muted-foreground"
+                        )}>
+                          {isCompleted ? "✓" : idx + 1}
+                        </div>
+                        <span className={cn(
+                          "absolute top-10 text-[9px] font-semibold uppercase tracking-wider text-center",
+                          isActive ? "text-primary font-bold" : "text-muted-foreground"
+                        )}>
+                          {step.label}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+                <div className="h-6" />
               </div>
 
               {/* Order Content */}

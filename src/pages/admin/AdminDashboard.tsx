@@ -1,10 +1,16 @@
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Store, Receipt, ShieldCheck, Users, TrendingUp, Package } from "lucide-react";
 import { useApp } from "@/context/AppContext";
 import { formatIDR, formatDateID } from "@/lib/mockData";
 
 export default function AdminDashboard() {
-  const { umkmApps, orders, certificates, products } = useApp();
+  const { umkmApps, orders, certificates, products, refreshAll } = useApp();
+
+  useEffect(() => {
+    refreshAll();
+  }, []);
+
   const totalRevenue = orders.reduce((s, o) => s + o.total, 0);
   const pendingUmkm = umkmApps.filter((u) => u.status === "Pending").length;
   const pendingCert = certificates.filter((c) => c.status === "Pending").length;

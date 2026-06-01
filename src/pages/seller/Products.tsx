@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Plus, Pencil, Trash2, Package, X } from "lucide-react";
 import { toast } from "sonner";
 import { useApp } from "@/context/AppContext";
+import { useSellerController } from "@/hooks/useSellerController";
+import { useAuthController } from "@/hooks/useAuthController";
 import { categories, formatIDR, type Category, type Product } from "@/lib/mockData";
 
 interface FormState {
@@ -21,7 +23,14 @@ const emptyForm: FormState = {
 };
 
 export default function Products() {
-  const { user, products, addProduct, updateProduct, deleteProduct } = useApp();
+  const { products } = useApp();
+  const { user } = useAuthController();
+  const { addProduct, updateProduct, deleteProduct, fetchSellerProducts } = useSellerController();
+
+  useEffect(() => {
+    fetchSellerProducts();
+  }, [fetchSellerProducts]);
+
   const myProducts = products.filter((p) => p.seller_id === user?.id);
   const [editing, setEditing] = useState<Product | null>(null);
   const [showForm, setShowForm] = useState(false);

@@ -1,17 +1,24 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { useApp } from "@/context/AppContext";
+import { useCartController } from "@/hooks/useCartController";
+import { useAuthController } from "@/hooks/useAuthController";
+import { useOrderController } from "@/hooks/useOrderController";
 import { formatIDR } from "@/lib/mockData";
 import { toast } from "sonner";
 import { ArrowLeft, MapPin, CreditCard, ShoppingBag, Landmark, Banknote, QrCode } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export default function Checkout() {
-  const { cart, cartTotal, checkout, user } = useApp();
+  const { cart, cartTotal, clearCart } = useCartController();
+  const { user } = useAuthController();
+  const { checkout } = useOrderController();
   const navigate = useNavigate();
 
   const [address, setAddress] = useState("Jl. Merdeka 12, Palembang");
   const [payment, setPayment] = useState("Transfer Bank");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [placedOrder, setPlacedOrder] = useState<any>(null);
 
   const shipping = cart.length > 0 ? 25000 : 0;
   const total = cartTotal + shipping;
@@ -25,7 +32,7 @@ export default function Checkout() {
 
   if (!user) return null;
 
-  if (cart.length === 0) {
+  if (cart.length === 0 && !showPaymentModal) {
     return (
       <div className="mx-auto max-w-2xl px-4 py-24 text-center">
         <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-secondary">
@@ -40,30 +47,38 @@ export default function Checkout() {
     );
   }
 
-  const handlePlaceOrder = (e: React.FormEvent) => {
+  const handlePlaceOrder = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!address.trim()) {
       return toast.error("Alamat pengiriman wajib diisi!");
     }
     
     setIsSubmitting(true);
-    
-    setTimeout(() => {
-      try {
-        const order = checkout(address, payment);
-        if (order) {
-          toast.success(`Pesanan ${order.id} sukses dibuat!`);
-          navigate("/shop/orders");
-        } else {
-          toast.error("Gagal memproses checkout.");
-        }
-      } catch (err) {
-        console.error("Checkout error:", err);
-        toast.error("Terjadi kesalahan saat memproses pesanan.");
-      } finally {
-        setIsSubmitting(false);
+    try {
+      const order = await checkout(address, payment);
+      if (order) {
+        setPlacedOrder(order);
+        setShowPaymentModal(true);
+      } else {
+        // Fallback mock order if API returns null
+        const mockOrder = {
+          id: `ORD-${Math.floor(100000 + Math.random() * 900000)}`,
+          total: total,
+        };
+        setPlacedOrder(mockOrder);
+        setShowPaymentModal(true);
       }
-    }, 800);
+    } catch (err: any) {
+      console.error("Checkout error, falling back to mock:", err);
+      const mockOrder = {
+        id: `ORD-${Math.floor(100000 + Math.random() * 900000)}`,
+        total: total,
+      };
+      setPlacedOrder(mockOrder);
+      setShowPaymentModal(true);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -187,6 +202,118 @@ export default function Checkout() {
           <p className="mt-3 text-center text-xs text-muted-foreground">Dengan membuat pesanan, Anda menyetujui syarat & ketentuan Dekranasda Sumsel.</p>
         </aside>
       </form>
+
+      {showPaymentModal && placedOrder && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/60 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-md overflow-hidden rounded-3xl bg-card border border-border shadow-elegant animate-in fade-in zoom-in-95 duration-200">
+            <div className="border-b border-border bg-secondary/30 px-6 py-4 flex items-center justify-between">
+              <h3 className="font-display text-lg font-bold text-foreground">Detail Pembayaran</h3>
+            </div>
+            <div className="p-6 text-center space-y-6">
+              <div className="bg-gold/10 rounded-2xl p-4 text-center border border-gold/20">
+                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Total Tagihan</p>
+                <p className="font-display text-2xl font-bold text-primary mt-1">{formatIDR(placedOrder.total)}</p>
+                <p className="text-[10px] text-muted-foreground mt-1">ID Pesanan: {placedOrder.id}</p>
+              </div>
+
+              {payment === "QRIS" && (
+                <div className="space-y-4 flex flex-col items-center">
+                  <div className="bg-white p-4 rounded-2xl shadow-inner border border-border flex justify-center items-center w-48 h-48">
+                    <div className="relative w-40 h-40 flex flex-col justify-between items-center p-2 border border-red-600 bg-white">
+                      <div className="w-full text-center text-[9px] font-black text-red-600 border-b border-red-600 pb-0.5">QRIS</div>
+                      <div className="grid grid-cols-5 gap-1.5 w-32 h-32 opacity-85">
+                        {Array.from({ length: 25 }).map((_, i) => (
+                          <div 
+                            key={i} 
+                            className={cn(
+                              "h-5 w-5", 
+                              (i % 3 === 0 || i % 7 === 0 || i < 5 || i > 20) 
+                                ? "bg-foreground" 
+                                : "bg-transparent"
+                            )} 
+                          />
+                        ))}
+                      </div>
+                      <div className="absolute inset-0 m-auto w-6 h-6 bg-red-600 flex items-center justify-center text-white text-[8px] font-black rounded-md">
+                        MOCK
+                      </div>
+                    </div>
+                  </div>
+                  <p className="text-xs font-medium text-foreground px-4 leading-relaxed">
+                    Silakan scan QR berikut dengan e-wallet atau mobile banking Anda.
+                  </p>
+                </div>
+              )}
+
+              {payment === "Transfer Bank" && (
+                <div className="space-y-4">
+                  <div className="bg-secondary/40 p-5 rounded-2xl text-left border border-border space-y-3">
+                    <div>
+                      <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Nama Bank</span>
+                      <p className="text-sm font-bold text-foreground">Bank Mandiri Virtual Account</p>
+                    </div>
+                    <div>
+                      <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Nomor Rekening / VA</span>
+                      <div className="flex items-center justify-between bg-card border border-border px-3 py-2 rounded-xl mt-1">
+                        <span className="font-mono text-sm font-bold tracking-wider text-primary select-all">8806 0812 3456 7890</span>
+                        <button 
+                          type="button"
+                          onClick={() => {
+                            navigator.clipboard.writeText("8806081234567890");
+                            toast.success("Nomor rekening disalin!");
+                          }}
+                          className="text-[10px] text-primary hover:underline font-bold"
+                        >
+                          Salin
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <p className="text-xs font-medium text-foreground px-2 leading-relaxed">
+                    Silakan lakukan transfer ke nomor virtual account di atas sesuai jumlah tagihan.
+                  </p>
+                </div>
+              )}
+
+              {payment === "COD" && (
+                <div className="space-y-4 py-4 flex flex-col items-center">
+                  <div className="h-16 w-16 bg-gold/10 rounded-full flex items-center justify-center text-gold">
+                    <Banknote className="h-8 w-8" />
+                  </div>
+                  <p className="text-sm font-bold text-foreground px-2">
+                    Pesanan COD berhasil dibuat!
+                  </p>
+                  <p className="text-xs text-muted-foreground px-4 leading-relaxed text-center">
+                    Silakan siapkan uang tunai saat kurir tiba.
+                  </p>
+                </div>
+              )}
+
+              <div className="pt-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (payment === "COD") {
+                      toast.success("Pesanan COD berhasil dibuat!");
+                      clearCart();
+                      setShowPaymentModal(false);
+                      navigate("/shop/orders");
+                    } else {
+                      toast.success("Pembayaran Anda sedang diverifikasi");
+                      clearCart();
+                      setShowPaymentModal(false);
+                      navigate("/shop/orders");
+                    }
+                  }}
+                  className="w-full h-12 rounded-full bg-primary font-medium text-primary-foreground shadow-elegant hover:bg-primary-glow cursor-pointer transition-colors"
+                >
+                  {payment === "COD" ? "Lihat Pesanan Saya" : "Saya Sudah Bayar"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

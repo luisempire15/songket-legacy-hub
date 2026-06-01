@@ -3,13 +3,15 @@ import { useState } from "react";
 import { Star, Store, Minus, Plus, ShoppingBag, Truck, ShieldCheck, ArrowLeft, Award } from "lucide-react";
 import { toast } from "sonner";
 import { formatIDR } from "@/lib/mockData";
-import { useApp } from "@/context/AppContext";
+import { useProductController } from "@/hooks/useProductController";
+import { useCartController } from "@/hooks/useCartController";
 import { ProductCard } from "@/components/site/ProductCard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function ProductDetail() {
   const { id } = useParams<{ id: string }>();
-  const { addToCart, products: ctxProducts } = useApp();
+  const { products: ctxProducts } = useProductController();
+  const { addToCart } = useCartController();
   const product = ctxProducts.find((p) => p.id === id);
   const [qty, setQty] = useState(1);
 
@@ -137,7 +139,13 @@ export default function ProductDetail() {
           <h2 className="mb-6 font-display text-2xl font-bold">Produk Serupa</h2>
           <div className="grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-4">
             {related.map((p) => (
-              <ProductCard key={p.id} product={p} />
+              <ProductCard key={p.id} product={p}>
+                {p.certified && (
+                  <span className="absolute left-3 bottom-3 rounded-full bg-emerald-600 px-2 py-0.5 text-[9px] font-bold tracking-wider text-white shadow-sm flex items-center gap-1">
+                    ✓ Asli Terverifikasi
+                  </span>
+                )}
+              </ProductCard>
             ))}
           </div>
         </section>

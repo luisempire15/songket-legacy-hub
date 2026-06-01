@@ -2,6 +2,7 @@ import { Link, useLocation } from "react-router-dom";
 import { LayoutDashboard, Package, ClipboardList, Award, LogOut } from "lucide-react";
 import { useApp } from "@/context/AppContext";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 const items = [
   { to: "/seller", label: "Dashboard", icon: LayoutDashboard, exact: true },
@@ -40,7 +41,15 @@ export function SellerSidebar() {
         })}
       </nav>
       <div className="border-t border-border p-3">
-        <button onClick={logout} className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-foreground/75 hover:bg-secondary hover:text-destructive">
+        <button 
+          onClick={() => {
+            if (window.confirm("Apakah Anda yakin ingin keluar dari akun ini?")) {
+              logout();
+              toast.success("Berhasil keluar dari akun.");
+            }
+          }} 
+          className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-foreground/75 hover:bg-secondary hover:text-destructive cursor-pointer"
+        >
           <LogOut className="h-4 w-4" /> Keluar
         </button>
       </div>

@@ -1,6 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { Home, Store, ShoppingBag, User } from "lucide-react";
-import { useApp } from "@/context/AppContext";
+import { useCartController } from "@/hooks/useCartController";
+import { useAuthController } from "@/hooks/useAuthController";
 import { cn } from "@/lib/utils";
 
 const items = [
@@ -12,7 +13,8 @@ const items = [
 
 export function BottomNav() {
   const { pathname } = useLocation();
-  const { cartCount, user } = useApp();
+  const { cartCount } = useCartController();
+  const { user } = useAuthController();
   return (
     <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-background/95 backdrop-blur-md sm:hidden">
       <ul className="mx-auto grid max-w-md grid-cols-4">

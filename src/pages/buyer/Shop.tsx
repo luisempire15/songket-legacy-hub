@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { Search } from "lucide-react";
 import { categories, type Category } from "@/lib/mockData";
-import { useApp } from "@/context/AppContext";
+import { useProductController } from "@/hooks/useProductController";
 import { ProductCard } from "@/components/site/ProductCard";
 import { cn } from "@/lib/utils";
 import { useSearchParams } from "react-router-dom";
@@ -13,7 +13,7 @@ export default function Shop() {
   const initialCat = searchParams.get("category") || "";
   const initialQ = searchParams.get("q") || "";
 
-  const { products } = useApp();
+  const { products } = useProductController();
   const [cat, setCat] = useState<Category | "">(initialCat as Category | "");
   const [q, setQ] = useState(initialQ);
   const [sort, setSort] = useState<SortKey>("popular");
@@ -97,7 +97,13 @@ export default function Shop() {
       ) : (
         <div className="grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-3 lg:grid-cols-4">
           {list.map((p) => (
-            <ProductCard key={p.id} product={p} />
+            <ProductCard key={p.id} product={p}>
+              {p.certified && (
+                <span className="absolute left-3 bottom-3 rounded-full bg-emerald-600 px-2 py-0.5 text-[9px] font-bold tracking-wider text-white shadow-sm flex items-center gap-1">
+                  ✓ Asli Terverifikasi
+                </span>
+              )}
+            </ProductCard>
           ))}
         </div>
       )}

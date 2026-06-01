@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Package, ClipboardList, Award, TrendingUp, ShoppingBag } from "lucide-react";
 import { useApp } from "@/context/AppContext";
@@ -5,7 +6,12 @@ import { formatIDR, formatDateID } from "@/lib/mockData";
 import { OrderStatusBadge } from "@/pages/admin/AdminTransactions";
 
 export default function SellerDashboard() {
-  const { user, products, orders, certificates } = useApp();
+  const { user, products, orders, certificates, refreshAll } = useApp();
+
+  useEffect(() => {
+    refreshAll();
+  }, []);
+
   const myProducts = products.filter((p) => p.seller_id === user?.id);
   const myOrders = orders.filter((o) => o.items.some((i) => i.seller_id === user?.id));
   const myRevenue = myOrders.reduce((sum, o) => sum + o.items.filter((i) => i.seller_id === user?.id).reduce((s, i) => s + i.qty * i.price, 0), 0);

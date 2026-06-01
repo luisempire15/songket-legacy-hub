@@ -1,10 +1,11 @@
 import { Link } from "react-router-dom";
 import { ArrowRight, ShieldCheck, Award, Sparkles, Store } from "lucide-react";
 import heroImg from "@/assets/hero-songket.jpg";
-import { products } from "@/lib/mockData";
+import { useProductController } from "@/hooks/useProductController";
 import { ProductCard } from "@/components/site/ProductCard";
 
 export default function Home() {
+  const { products } = useProductController();
   const featured = products.slice(0, 6);
 
   return (
@@ -98,7 +99,13 @@ export default function Home() {
         </div>
         <div className="grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
           {featured.map((p) => (
-            <ProductCard key={p.id} product={p} />
+            <ProductCard key={p.id} product={p}>
+              {p.certified && (
+                <span className="absolute left-3 bottom-3 rounded-full bg-emerald-600 px-2 py-0.5 text-[9px] font-bold tracking-wider text-white shadow-sm flex items-center gap-1">
+                  ✓ Asli Terverifikasi
+                </span>
+              )}
+            </ProductCard>
           ))}
         </div>
       </section>

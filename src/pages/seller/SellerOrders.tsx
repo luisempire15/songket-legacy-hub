@@ -1,15 +1,23 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Package, Truck, X } from "lucide-react";
 import { toast } from "sonner";
-import { useApp } from "@/context/AppContext";
+import { useOrderController } from "@/hooks/useOrderController";
+import { useAuthController } from "@/hooks/useAuthController";
 import { formatDateID, formatIDR, type OrderStatus, type Order } from "@/lib/mockData";
 import { cn } from "@/lib/utils";
 import { OrderStatusBadge } from "@/pages/admin/AdminTransactions";
 
 export default function SellerOrders() {
-  const { user, orders, updateOrderStatus } = useApp();
+  const { user } = useAuthController();
+  const { orders, updateOrderStatus, fetchSellerOrders } = useOrderController();
   const [filter, setFilter] = useState<OrderStatus | "All">("All");
   const [tracking, setTracking] = useState<{ order: Order; value: string } | null>(null);
+
+  useEffect(() => {
+    if (user) {
+      fetchSellerOrders(user.id);
+    }
+  }, [user, fetchSellerOrders]);
 
   const myOrders = orders
     .map((o) => ({ ...o, items: o.items.filter((i) => i.seller_id === user?.id) }))

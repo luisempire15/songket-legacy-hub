@@ -1,16 +1,24 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Award, Upload, X } from "lucide-react";
 import { toast } from "sonner";
 import { useApp } from "@/context/AppContext";
+import { useSellerController } from "@/hooks/useSellerController";
+import { useAuthController } from "@/hooks/useAuthController";
 import { formatDateID, type CertStatus } from "@/lib/mockData";
 import { cn } from "@/lib/utils";
 
 export default function Certification() {
-  const { user, products, certificates, requestCertificate } = useApp();
+  const { products } = useApp();
+  const { user } = useAuthController();
+  const { certificates, requestCertificate, fetchSellerCertificates } = useSellerController();
   const myProducts = products.filter((p) => p.seller_id === user?.id);
   const myCerts = certificates.filter((c) => c.seller_id === user?.id);
   const [show, setShow] = useState(false);
   const [productId, setProductId] = useState(myProducts[0]?.id ?? "");
+
+  useEffect(() => {
+    fetchSellerCertificates();
+  }, [fetchSellerCertificates]);
   const [notes, setNotes] = useState("");
   const [image, setImage] = useState<string>("");
 

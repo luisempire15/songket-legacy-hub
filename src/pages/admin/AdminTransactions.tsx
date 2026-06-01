@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useApp } from "@/context/AppContext";
 import { formatDateID, formatIDR, type OrderStatus } from "@/lib/mockData";
 import { cn } from "@/lib/utils";
@@ -6,8 +6,13 @@ import { cn } from "@/lib/utils";
 const STATUSES: (OrderStatus | "All")[] = ["All", "Pending", "Processing", "Shipped", "Delivered", "Cancelled"];
 
 export default function AdminTransactions() {
-  const { orders } = useApp();
+  const { orders, refreshAll } = useApp();
   const [filter, setFilter] = useState<OrderStatus | "All">("All");
+
+  useEffect(() => {
+    refreshAll();
+  }, []);
+
   const list = orders.filter((o) => filter === "All" || o.status === filter);
 
   return (

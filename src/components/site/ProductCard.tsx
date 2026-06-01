@@ -1,8 +1,15 @@
+import { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { Star, Store } from "lucide-react";
-import { formatIDR, type Product } from "@/lib/mockData";
+import { formatIDR } from "@/lib/mockData";
+import { Product } from "@/types";
 
-export function ProductCard({ product }: { product: Product }) {
+interface ProductCardProps {
+  product: Product;
+  children?: ReactNode; // Allow injecting custom badges, certifications etc (OCP)
+}
+
+export function ProductCard({ product, children }: ProductCardProps) {
   const discount = product.original_price
     ? Math.round(((product.original_price - product.price) / product.original_price) * 100)
     : 0;
@@ -26,6 +33,7 @@ export function ProductCard({ product }: { product: Product }) {
             -{discount}%
           </span>
         )}
+        {children}
       </div>
       <div className="flex flex-1 flex-col gap-2 p-4">
         <h3 className="font-display text-base font-semibold leading-snug text-foreground line-clamp-2 group-hover:text-primary">
